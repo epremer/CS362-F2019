@@ -31,7 +31,7 @@ int main() {
     int newCards = 0;
     int discarded = 1;
     int extraCoins = 0;
-    int suffledCards = 0;
+    int shuffledCards = 0;
 
     int i, j, k;
     int handpos = 0;
@@ -56,10 +56,18 @@ int main() {
     // initialize a game state and player cards
     initializeGame(numPlayers, cardSupplies, seed, &G);
 
-    printf("\n////////// Testing Card %s //////////\n", TESTCARD);
+// +1 Buy... You may discard an Estate for +4 treasure. 
+//      If you don't, gain an Estate.
 
-    ////////// TEST #1: If you have an Estate, Discard an Estate for +4 Treasure
-    printf("////////// TEST 1: If you have an Estate, Discard one for +4 Treasure\n");
+    printf("\n////////// Testing Card %s //////////\n", TESTCARD);
+    
+    ////////// TEST #1: +1 Buy
+    printf("////////// TEST 1: +1 Buy\n");
+    memcpy(&testG, &G, sizeof(struct gameState));
+
+
+    ////////// TEST #2: If you have an Estate, Discard an Estate for +4 Treasure
+    printf("////////// TEST 2: If you have an Estate, Discard one for +4 Treasure\n");
 
     // copy game state to a test case
     // do I need to 
@@ -85,8 +93,8 @@ int main() {
         printf("RESULT != 0 && RESULT != 1");
     }
 
-    ////////// TEST #2: If no Estate, gain one.
-    printf("////////// TEST 1: If no Estate, gain one.\n");
+    ////////// TEST #3: If no Estate, gain one.
+    printf("////////// TEST 3: If no Estate, gain one.\n");
 
     // copy game state to a test case
     memcpy(&testG, &G, sizeof(struct gameState));   // for new test

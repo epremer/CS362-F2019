@@ -25,7 +25,6 @@
 #include "dominion_helpers.h"
 #include <string.h>
 #include <stdio.h>
-//#include <assert.h>
 #include <stdlib.h>
 
 #define TESTCARD "tribute"
@@ -52,6 +51,13 @@ int main() {
     struct gameState G, testG;
     int cardSupplies[10] = {  adventurer, embargo, village, minion, mine,
                             cutpurse, sea_hag, tribute, smithy, council_room };
+// The player to your left reveals then discards
+//      the top 2 cards of his deck.
+// For each differently named card revealed, if
+//      it is:
+//  1) Action Card: +2 Actions
+//  2) Treasure Card: +2 treasure
+//  3) Victory Card: +2 cards
 
     // initialize a game state and player cards
     initializeGame(numPlayers, cardSupplies, seed, &G);
@@ -59,16 +65,16 @@ int main() {
     printf("\n////////// Testing Card %s //////////\n", TESTCARD);
 
     ////////// TEST #1: 
-    printf("////////// TEST 1: \n");
+    printf("////////// TEST 1: Test player to left's deck decremented by 2\n");
 
     // copy game state to a test case
     memcpy(&testG, &G, sizeof(struct gameState));
-    choice1 = 1;
+    
     // cardEffect for TRIBUTE
 
     ////////// TEST #2:
     memcpy(&testG, &G, sizeof(struct gameState));
-    choice1 = 2;
+    
     // cardEffect for TRIBUTE
 
     printf("\n////////// SUCCESS: Testing Complete for %s //////////\n\n", TESTCARD);
