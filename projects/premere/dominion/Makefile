@@ -1,5 +1,33 @@
 CFLAGS= -Wall -fpic -coverage -lm -std=c99
 
+default: unittestresults
+
+unittestresults: unittest1.c unittest2.c unittest3.c unittest4.c unittest5.c dominion.c rngs.c
+	echo "unittest1.c results: " >> unittestresults.out
+	gcc -o unittest1 -g unittest1.c dominion.c rngs.c $(CFLAGS)
+	./unittest1 >> unittestresults.out
+	gcov dominion.c -f -b -c >> unittestresults.out
+
+	echo "unittest2.c results: " >> unittestresults.out
+	gcc -o unittest2 -g unittest2.c dominion.c rngs.c $(CFLAGS)
+	./unittest2 >> unittestresults.out
+	gcov dominion.c -f -b -c >> unittestresults.out
+
+	echo "unittest3.c results: " >> unittestresults.out
+	gcc -o unittest3 -g unittest3.c dominion.c rngs.c $(CFLAGS)
+	./unittest3 >> unittestresults.out
+	gcov dominion.c -f -b -c >> unittestresults.out
+
+	echo "unittest4.c results: " >> unittestresults.out
+	gcc -o unittest4 -g unittest4.c dominion.c rngs.c $(CFLAGS)
+	./unittest4 >> unittestresults.out
+	gcov dominion.c -f -b -c >> unittestresults.out
+ 
+	echo "unittest5.c results: " >> unittestresults.out
+	gcc -o unittest5 -g unittest5.c dominion.c rngs.c $(CFLAGS)
+	./unittest5 >> unittestresults.out
+	gcov dominion.c -f -b -c >> unittestresults.out
+	
 rngs.o: rngs.h rngs.c
 	gcc -c rngs.c -g  $(CFLAGS)
 

@@ -28,21 +28,13 @@
 int main() {
 
     // initialize all variables
-    int newCards = 0;
-    int discarded = 1; // the current card being used
-    int extraCoins = 0;
-    int shuffledCards = 0;
-
-    int i, j, k;
-    int handpos = 0;
+    int handPos = 0;
     int choice1 = 0;
     int choice2 = 0;
     int choice3 = 0;
     int bonus = 0;
-    int remove1, remove2;
     int seed = 1000;
     int numPlayers = 2;
-    int thisPlayer = 0;
     
     struct gameState G, testG;
                                     
@@ -55,123 +47,132 @@ int main() {
     printf("\n////////// Testing Card %s //////////\n", TESTCARD);
 
 
-    ////////// TEST #1: Test Copper as Trashed Treasure
-    printf("////////// TEST 1: Test Copper as Trashed Treasure\n");
+    ////////// TEST #1: Test Copper as Trashed Treasure & Copper as Chosen Treasure
+    printf("////////// TEST 1: Test Copper as Trashed Treasure & Copper as Chosen Treasure\n");
 
 
     // copy game state to a test case
     memcpy(&testG, &G, sizeof(struct gameState));
     choice1 = copper;
     choice2 = copper;
+    int currentPlayer = testG.whoseTurn;
+
     cardEffect(mine, choice1, choice2, choice3, &testG, handPos, bonus);
 
-    if (state->hand[currentPlayer][choice1] < copper || state->hand[currentPlayer][choice1] > gold)
-    {
-        printf("FAILED: Test : check card is not less than Copper or greater than Gold");
-    }
 
-    if (choice2 > treasure_map || choice2 < curse)
-    {
-        printf("FAILED: Test : check card is greater than treasure map or less than curse");
-    }
-
-    if ((getCost(testG->hand[currentPlayer][choice1]) +3) > getCost(choice2) )
-    {
-        printf("FAILED: Test :");
-    }
-
-    // negative case
+    // negative cases
     // picking a card that isn't copper, silver, gold
-    // copy game state to a test case
-    memcpy(&testG, &G, sizeof(struct gameState));
-    choice1 = adventurer;
-    choice2 = silver;
-    cardEffect(mine, choice1, choice2, choice3, &testG, handPos, bonus);
-
-    if (&testG->hand[currentPlayer][choice1] < copper || &testG->hand[currentPlayer][choice1] > gold)
+    if (testG.hand[currentPlayer][choice1] < copper || testG.hand[currentPlayer][choice1] > gold)
     {
-        printf("FAILED: Test : check card is not less than Copper or greater than Gold");
+        printf("FAILED: Test 1a: check card is not less than Copper or greater than Gold\n");
     }
 
     if (choice2 > treasure_map || choice2 < curse)
     {
-        printf("FAILED: Test : check card is greater than treasure map or less than curse");
+        printf("FAILED: Test 1b: check card is greater than treasure map or less than curse\n");
     }
 
-    if ((getCost(testG->hand[currentPlayer][choice1]) +3) > getCost(choice2) )
+    if ((getCost(&testG.hand[currentPlayer][choice1]) +3) >= getCost(choice2) )
     {
-        printf("FAILED: Test :");
+        printf("FAILED: Test 1c: Cost is not at least the same as trashed card plus 3.\n");
     }
 
     // check gainCard()
     // Test: Drew right amount of cards
     if ((numHandCards(&testG)) == (numHandCards(&G))) 
     {
-        printf("FAILED: Did not discard and draw a card.")
-    } 
+        printf("FAILED: Test 1d: Did not discard card.\n");
+    }
+    else if ((numHandCards(&testG)) == (numHandCards(&G) - 1))
+    {
+        printf("PASSED: Test 1d: Discarded card.\n");
+    }
 
     // check supply
     if ((supplyCount(copper, &testG)) == supplyCount(copper, &G) - 1) 
     {
-        printf("PASSED: ")
+        printf("PASSED Test 1d: Copper Supply Pile Successfully Decremented.\n");
     }
 
 
 
 
-
-
-
-
-
-    ////////// TEST #2: Test that Copper can be exchanged for Silver
-    printf("////////// TEST 2: Test that Copper can be exchanged for Silver\n");
+    ////////// TEST #2: Test Adventurer as Trashed Treasure & Silver as Chosen Treasure
+    printf("\n////////// TEST 2: Test Adventurer as Trashed Treasure & Silver as Chosen Treasure\n");
 
     // copy game state to a test case
     memcpy(&testG, &G, sizeof(struct gameState));
-    cardEffect(mine, copper, silver, choice3, &testG, handPos, bonus);
+    choice1 = adventurer;
+    choice2 = silver;
+    currentPlayer = testG.whoseTurn;
+
+    cardEffect(mine, choice1, choice2, choice3, &testG, handPos, bonus);
+
+    if (&testG.hand[currentPlayer][choice1] < copper || &testG.hand[currentPlayer][choice1] > gold)
+    {
+        printf("FAILED: Test 2a: check card is not less than Copper or greater than Gold\n");
+    }
+
+    if (choice2 > treasure_map || choice2 < curse)
+    {
+        printf("FAILED: Test 2b: check card is greater than treasure map or less than curse\n");
+    }
+
+    if ((getCost(&testG.hand[currentPlayer][choice1]) +3) > getCost(choice2) )
+    {
+        printf("FAILED: Test 2c: cost is too high\n");
+    }
+    else {
+        printf("FAILED: Test 2d: Copper Supply Pile Failed to Decrement.\n");
+    }
+
+
+    ////////// TEST #3: Test that Copper can be exchanged for Silver
+    printf("\n////////// TEST 3: Test that Copper can be exchanged for Silver\n");
+
+    // copy game state to a test case
+    memcpy(&testG, &G, sizeof(struct gameState));
+    choice1 = copper;
+    choice2 = silver;
+    currentPlayer = testG.whoseTurn;
+
+    cardEffect(mine, choice1, choice2, choice3, &testG, handPos, bonus);
     
-    gainCard(choice2, &testG, 2, currentPlayer)
+    // negative cases
+    // picking a card that isn't copper, silver, gold
+    if (&testG.hand[currentPlayer][choice2] < copper || &testG.hand[currentPlayer][choice2] > gold)
+    {
+        printf("FAILED: Test 3a: check card is not less than Copper or greater than Gold\n");
+    }
 
+    if (choice2 > treasure_map || choice2 < curse)
+    {
+        printf("FAILED: Test 3b: check card is greater than treasure map or less than curse\n");
+    }
 
-    memcpy(&testG, &G, sizeof(struct gameState));
-    if ((testG->supplyCount[choice2]))
+    if ((getCost(&testG.hand[currentPlayer][choice1]) +3) > getCost(choice2) )
+    {
+        printf("FAILED: Test 3c: cost is too high\n");
+    }
 
-    ////////// TEST #2: Choose not to trash treasure
-    printf("////////// TEST 2: Choose not to trash Treasure card.\n");
-    memcpy(&testG, &G, sizeof(struct gameState));
-    // nothing changes, except mine is discarded
-    // handcount
+    // check gainCard()
+    // Test: Drew right amount of cards
+    // Test: Did card get discarded? decked? handed?
 
-    ////////// TEST #4: Check chosen treasure supply decremented
-    printf("////////// TEST 4: Check chosen treasure supply is decremented\n");
-    memcpy(&testG, &G, sizeof(struct gameState));
-   
-    // cardEffect for MINE
+    if ((numHandCards(&testG)) == (numHandCards(&G))) 
+    {
+        printf("FAILED: Test 3d: Did not discard card.\n");
+    }
 
-    ////////// TEST #5: Check that discard pile unchanged
-    printf("////////// TEST 5: Check that discard pile is unchanged (card should be trashed, not discarded)\n");
-    memcpy(&testG, &G, sizeof(struct gameState));
-    
-    // cardEffect for MINE
+    // check supply
+    if ((supplyCount(silver, &testG)) == supplyCount(silver, &G) - 1) 
+    {
+        printf("PASSED: Test 3e: Silver Supply Pile Successfully Decremented.\n");
+    }
+    else {
+        printf("FAILED: Test 3e: Silver Supply Pile Failed to Decrement.\n");
+    }
 
-    ////////// TEST #6: If Copper trashed, gain Copper or Silver only
-    printf("////////// TEST 6: If Copper trashed, gain Copper or Silver only\n");
-    memcpy(&testG, &G, sizeof(struct gameState));
-    
-    // cardEffect for MINE
-
-    ////////// TEST #7: If Silver trashed, gain Silver or Gold only
-    printf("////////// TEST 7: If Silver trashed, gain Silver or Gold only\n");
-    memcpy(&testG, &G, sizeof(struct gameState));
-
-    ////////// TEST #6: If Gold trashed, gain Gold only
-    printf("////////// TEST 6: If Gold trashed, gain Gold only\n");
-    memcpy(&testG, &G, sizeof(struct gameState));
-    
-    // cardEffect for MINE
-    
-    // cardEffect for MINE
 
     printf("\n////////// SUCCESS: Testing Complete for %s //////////\n\n", TESTCARD);
 

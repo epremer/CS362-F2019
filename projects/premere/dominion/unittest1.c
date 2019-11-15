@@ -20,7 +20,6 @@
 #include "dominion_helpers.h"
 #include <string.h>
 #include <stdio.h>
-//#include <assert.h>
 #include <stdlib.h>
 
 #define TESTCARD "baron"
@@ -34,7 +33,7 @@ int main() {
     int shuffledCards = 0;
 
     int i, j, k;
-    int handpos = 0;
+    int handPos = 0;
     int choice1 = 0;
     int choice2 = 0;
     int choice3 = 0;
@@ -47,63 +46,177 @@ int main() {
     int result; // used for testing if tests pass??
     
     struct gameState G, testG;
-                                        // does this include an Estate?
+                                        
     // Card Supplies available
-    // must be 'k'?
-    int cardSupplies[10] = {  adventurer, embargo, village, minion, mine, 
+    int cardSupplies[10] = {  baron, embargo, village, minion, mine, 
                             cutpurse, sea_hag, tribute, smithy, council_room };
 
     // initialize a game state and player cards
     initializeGame(numPlayers, cardSupplies, seed, &G);
 
-// +1 Buy... You may discard an Estate for +4 treasure. 
-//      If you don't, gain an Estate.
 
     printf("\n////////// Testing Card %s //////////\n", TESTCARD);
     
     ////////// TEST #1: +1 Buy
-    printf("////////// TEST 1: +1 Buy\n");
+    printf("\n////////// TEST 1: +1 Buy\n");
     memcpy(&testG, &G, sizeof(struct gameState));
+    choice1 = 0; // don't have an Estate to discard
+    
+    cardEffect(baron, choice1, choice2, choice3, &testG, handPos, bonus);
 
-
-    ////////// TEST #2: If you have an Estate, Discard an Estate for +4 Treasure
-    printf("////////// TEST 2: If you have an Estate, Discard one for +4 Treasure\n");
-
-    // copy game state to a test case
-    // do I need to 
-    //memset(&G, 23, sizeof(struct gameState)); // what is 23 here?
-    memcpy(&testG, &G, sizeof(struct gameState));   // for new test
-    choice1 = 1;
-    // cardEffect for BARON
-    result = cardBaron(whoseTurn(&testG), choice1, &testG); // what do i do with result??
-
-    // assertions
-    if (result == 0)
+    // did number of buys increase?
+    if (&testG.numBuys == (&G.numBuys + 1))
     {
-        printf("RESULT == 0"); 
-        // also test the game state ... not sure what that means
-        // test preState against gameState ... ??   &testG vs &G ??
+        printf("PASSED: Test 1a: +1 Buys.\n");
     }
-    else if (result == 1)
+    else 
     {
-        printf("RESULT == 1");
-    }
-    else
-    {
-        printf("RESULT != 0 && RESULT != 1");
+        printf("FAILED: Test 1a: Did not increment num of Buys.\n");
     }
 
-    ////////// TEST #3: If no Estate, gain one.
-    printf("////////// TEST 3: If no Estate, gain one.\n");
 
-    // copy game state to a test case
-    memcpy(&testG, &G, sizeof(struct gameState));   // for new test
+    ////////// TEST #2: Does Player have Estate to Discard?
+    printf("\n////////// TEST 2: Does Player have Estate to discard?\n");
+    int currentPlayer = testG.whoseTurn;
+    // ensure new hand does NOT have an Estate
+    //  use gainCard() ??
 
-    // cardEffect for BARON
-    // test if the hand doesn't have an estate
-    // if doesn't, add one from Supply
-    //      Estate Supply -1
-    //      Hand +1
+    int p = 0; // iterator for hand of cards
+    int card_not_discarded = 1;//Flag for discard set!
+    for (p; p < numHandCards(&testG); p++)
+    {
+        if (&testG.hand[currentPlayer][p] == estate)
+        { //Found an estate card!
+            printf("FAILED: Test 2a: Cannot make this choice; you have an Estate Card to discard.\n");
+        }
+    }
+
+
+
+    ////////// TEST #3: Does Supply Still Give Estate When Empty
+    printf("\n////////// TEST 3: Does Supply Still Give Estate When Empty\n");
+    memcpy(&testG, &G, sizeof(struct gameState));
+    choice1 = 0; // don't have an Estate to discard
+    
+    cardEffect(baron, choice1, choice2, choice3, &testG, handPos, bonus);
+
+    // estate supply is currently full b/c new game
+    if (supplyCount(estate, &testG) > 0) 
+    {
+        if ((numHandCards(&testG)) == (numHandCards(&G))) 
+        {
+            printf("FAILED: Test 3a: Did not discard card.\n");
+        }
+    }
+    // estate supply should not be <= 0 currently     
+    else if (supplyCount(estate, &testG) <= 0)
+    {
+        printf("FAILED: Test 3a: Supply Cannot Be Below 0.\n");
+    }
+   
+
+    ////////// TEST #4: Does Supply Still Give Estate When Empty
+    printf("\n////////// TEST 4: Does Supply Still Give Estate When Empty\n");
+    memcpy(&testG, &G, sizeof(struct gameState));
+    choice1 = 0; // don't have an Estate to discard
+
+    cardEffect(baron, choice1, choice2, choice3, &testG, handPos, bonus);
+
+    // does Estate supply properly NOT give player new Estate card when supply is OUT?
+    while (supplyCount(estate, &testG) != 0)
+    {
+        testG.supplyCount[estate]--;
+    }
+    while (supplyCount(estate, &G) != 0)
+    {
+        G.supplyCount[estate]--;
+    }
+
+    // estate supply is currently EMPTY
+    if (supplyCount(estate, &testG) > 0) 
+    {
+        if ((numHandCards(&testG)) == (numHandCards(&G))) 
+        {
+            printf("FAILED: Test 4a: Did not discard card.\n");
+        }
+    }   
+    
+    if (supplyCount(estate, &testG) <= 0)
+    {
+        printf("FAILED: Test 4a: Supply Cannot Be Below 0.\n");
+       
+        // did player receive an estate when the supply was empty/below?
+        if (supplyCount(estate, &testG) != supplyCount(estate, &G)) // because should not have given any estate cards
+        {
+            printf("FAILED: Test 4b: Gained an Estate when supply was supposed to be empty.\n");
+        }
+    }
+
+
+
+    ////////// TEST #5: Does proper amount of treasure get added to player's purse?
+    printf("\n////////// TEST 5: Does proper amount of treasure get added to player's purse?\n");
+    memcpy(&testG, &G, sizeof(struct gameState));
+    choice1 = 1; // discard an estate for +4 treasure
+
+    cardEffect(baron, choice1, choice2, choice3, &testG, handPos, bonus);
+
+    if (&testG.coins == &G.coins + 4)
+    {
+        printf("PASSED: Test 5a: Correct number of treasure given.\n");
+    }
+    else{
+        printf("FAILED: Test 5a: INcorrect number of treasure given.\n");
+    }
+
+
+    ////////// TEST #6: Player Chooses to discard an Estate when they do not have an Estate
+    printf("\n////////// TEST 6: Player Chooses to discard an Estate when they do not have an Estate.\n");
+    memcpy(&testG, &G, sizeof(struct gameState));
+    choice1 = 1; // wants to discard an Estate
+    
+    // ensure new hand does NOT have an Estate for testing
+    for (p = 0; p < numHandCards(&testG); p++)
+    {
+        if (testG.hand[currentPlayer][p] == estate)
+        { //Found an estate card!
+            // reassign it to another card for testing purposes
+            testG.hand[currentPlayer][p] = 11;
+        }
+    }
+
+    cardEffect(baron, choice1, choice2, choice3, &testG, handPos, bonus);
+    currentPlayer = testG.whoseTurn;
+
+
+    int foundEstate = 0;
+    for (p = 0; p < numHandCards(&testG); p++)
+    {
+        if (testG.hand[currentPlayer][p] == estate)
+        { //Found an estate card!
+            printf("FAILED: Test 6a: Cannot make this choice; you have an Estate Card to discard.\n");
+            foundEstate = 1;
+        }
+    }
+    if (foundEstate == 0)
+    {
+        printf("FAILED: Cannot discard an Estate; you do not have one.\n");
+    }
+    
+
+
+
+
+
+
+    // does hand get traversed infinitely?
+    // a bug I introduced in Ass #2 causes an infinite loop, 
+    //      which cannot be properly tested because of
+    //      the halting problem ... unless I use a unit testing
+    //      framework to track the amount of time it takes to
+    //      complete the loop, which I don't have access to
+    
+
 
     printf("\n////////// SUCCESS: Testing Complete for %s //////////\n\n", TESTCARD);
 
