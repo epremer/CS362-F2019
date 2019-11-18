@@ -1,6 +1,22 @@
 CFLAGS= -Wall -fpic -coverage -lm -std=c99
 
+default: randomtestresults
 
+randomtestresults: randomtestcard1.c randomtestcard2.c randomtestcard3.c dominion.c rngs.c
+	echo "randomtestcard1.c results: " >> randomtestresults.out
+	gcc -o randomtestcard1 -g randomtestcard1.c dominion.c rngs.c $(CFLAGS)
+	./randomtestcard1 >> randomtestresults.out
+	gcov dominion.c -f -b -c >> randomtestresults.out
+
+	echo "randomtestcard2.c results: " >> randomtestresults.out
+	gcc -o randomtestcard2 -g randomtestcard2.c dominion.c rngs.c $(CFLAGS)
+	./randomtestcard2 >> randomtestresults.out
+	gcov dominion.c -f -b -c >> randomtestresults.out
+
+	echo "randomtestcard3.c results: " >> randomtestresults.out
+	gcc -o randomtestcard3 -g randomtestcard3.c dominion.c rngs.c $(CFLAGS)
+	# ./randomtestcard3 >> randomtestresults.out
+	gcov dominion.c -f -b -c >> randomtestresults.out
 
 rngs.o: rngs.h rngs.c
 	gcc -c rngs.c -g  $(CFLAGS)

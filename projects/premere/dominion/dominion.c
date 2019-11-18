@@ -1069,7 +1069,7 @@ int cardMine(int currentPlayer, int choice1, int choice2, struct gameState *stat
 
         gainCard(choice2, state, 3, currentPlayer); // should be 2 not 3
 
-        //discard card from hand
+        //discard Mine card from hand
         discardCard(handPos, currentPlayer, state, 0);
 
         //discard trashed card
@@ -1109,7 +1109,7 @@ int cardBaron(int currentPlayer, int choice1, struct gameState *state)
                         printf("No estate cards in your hand, invalid choice\n");
                         printf("Must gain an estate if there are any\n");
                     }
-                    if (supplyCount(estate, state) > 0) {
+                    if (supplyCount(estate, state) >= 0) {
                         gainCard(estate, state, 0, currentPlayer);
 
                         state->supplyCount[estate]--;//Decrement estates
@@ -1117,7 +1117,7 @@ int cardBaron(int currentPlayer, int choice1, struct gameState *state)
                             isGameOver(state);
                         }
                     }
-                    card_not_discarded = 1;//Exit the loop      // should be 0 not 1
+                    card_not_discarded = 0;//Exit the loop      // should be 0 not 1
                 }
 
                 else {
@@ -1127,10 +1127,10 @@ int cardBaron(int currentPlayer, int choice1, struct gameState *state)
         }
 
         else {
-            if (supplyCount(estate, state) >= 0) {      // should be > not >=
+            if (supplyCount(estate, state) >= 0) {  
                 gainCard(estate, state, 0, currentPlayer);//Gain an estate
 
-                state->supplyCount[estate]--;//Decrement Estates
+                //state->supplyCount[estate]--;//Decrement Estates
                 if (supplyCount(estate, state) == 0) {
                     isGameOver(state);
                 }
@@ -1205,7 +1205,7 @@ int cardAmbassador(int currentPlayer, int choice1, int choice2, struct gameState
 {
         int i, j = 0;		//used to check if player has enough cards to discard
 
-        if (choice2 < 2 || choice2 > 0)     // should be > < not < >
+        if (choice2 > 2 || choice2 < 0) 
         {
             return -1;
         }
@@ -1222,7 +1222,7 @@ int cardAmbassador(int currentPlayer, int choice1, int choice2, struct gameState
                 j++;
             }
         }
-        if (j < choice2)
+        if (j > choice2)
         {
             return -1;
         }
@@ -1230,8 +1230,10 @@ int cardAmbassador(int currentPlayer, int choice1, int choice2, struct gameState
         if (DEBUG)
             printf("Player %d reveals card number: %d\n", currentPlayer, state->hand[currentPlayer][choice1]);
 
+
         //increase supply count for choosen card by amount being discarded
         state->supplyCount[state->hand[currentPlayer][choice1]] += choice2;
+
 
         //each other player gains a copy of revealed card
         for (i = 0; i < state->numPlayers - 1; i++)     // should NOT be state->numPlayers -1
@@ -1308,8 +1310,7 @@ int cardTribute(int currentPlayer, int nextPlayer, struct gameState *state, int 
         }
 
         for (i = 0; i <= 2; i++) {
-            // I don't think gold should be included in the following if statement
-            if (tributeRevealedCards[i] == copper || tributeRevealedCards[i] == silver) { 
+            if (tributeRevealedCards[i] == copper || tributeRevealedCards[i] == silver) { // should include GOLD
                 //Treasure cards
                 state->coins += 2;
             }

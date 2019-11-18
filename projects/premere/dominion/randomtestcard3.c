@@ -28,8 +28,11 @@
 #include <stdlib.h>
 
 #define TESTCARD "tribute"
+#define N 60000
 
-int main() {
+void testCard(int numPlayers, struct gameState G)
+{
+    int testsFailed = 0;
 
     // initialize all variable
     int handPos = 0;
@@ -38,19 +41,12 @@ int main() {
     int choice3 = 0;
     int bonus = 0;
     int seed = 1000;
-    int numPlayers = 2;
     int tributeRevealedCards[2] = {-1, -1};
     
-    struct gameState G, testG;
+    struct gameState testG;
     int cardSupplies[10] = {  adventurer, embargo, village, minion, mine,
                             cutpurse, sea_hag, tribute, smithy, council_room };
-// The player to your left reveals then discards
-//      the top 2 cards of his deck.
-// For each differently named card revealed, if
-//      it is:
-//  1) Action Card: +2 Actions
-//  2) Treasure Card: +2 treasure
-//  3) Victory Card: +2 cards
+
 
     // initialize a game state and player cards
     initializeGame(numPlayers, cardSupplies, seed, &G);
@@ -624,8 +620,50 @@ int main() {
     //              assert testG.numActions == G.numActions + 2
 
 
+}
+
+int main() {
+
+    int testsFailed = 0;
+    srand(time(NULL));
+
+    // Card Supplies available
+    int cardSupplies[10] = {  baron, embargo, village, minion, mine, 
+                            cutpurse, sea_hag, tribute, smithy, council_room };
+    int seed = 1000;
+
+    // loop however many number of times to test
+    for (int i = 0; i < N; i++)
+    {
+        // create a new game state
+        struct gameState G;
+        int currentPlayer = G.whoseTurn;
+
+        // randomize the values
+        // randomize number of players
+        int numPlayers = G.numPlayers;
+        G.numPlayers = rand() % MAX_PLAYERS;
+    
+        // initialize game
+        initializeGame(numPlayers, cardSupplies, seed, &G);
+
+        // randomize number of cards in hand count for each player affected by card
+        G.handCount[currentPlayer] = rand() % MAX_DECK;
+
+        // randomize number of cards in the deck
+        G.deckCount[currentPlayer] = rand() % MAX_DECK;
+
+        // randomize number of cards in discard count
+        G.discardCount[currentPlayer] = rand();
+
+        // randomize number of cards played
+        G.playedCards[MAX_DECK] = rand();
+
+        // run unit tests for the card
+        testCard(numPlayers, G);
+    }
 
     printf("\n////////// SUCCESS: Testing Complete for %s //////////\n\n", TESTCARD);
-
+    // printf("Number of Tests Failed: %d\n\n", testsFailed + 10);
     return 0;
 }

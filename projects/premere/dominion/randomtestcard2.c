@@ -7,11 +7,11 @@
 //          draws 4 cards.
 
 /******************************************
-* Program Name: unittest2.c
-* Assignment Name: Assignment 3
+* Program Name: randomcardtest2.c
+* Assignment Name: Assignment 4
 * Author: Elizabeth Premer
-* Date Due: 10 November 2019
-* Description: This is a test suite for Dominion 
+* Date Due: 17 November 2019
+* Description: This is a random test suite for Dominion 
 *               game play using the MINION card.
 * NOTE: The initialized variables and skeleton
 *       of this code is loosely borrowed from
@@ -26,9 +26,11 @@
 #include <stdio.h>
 #include <stdlib.h>
 
-#define TESTCARD "minion"
+#define TESTCARD "Minion"
+#define N 1000
 
-int main() {
+void testCard(int numPlayers, struct gameState G)
+{
 
     // initialize all variables
     int handPos = 0;
@@ -37,14 +39,13 @@ int main() {
     int choice3 = 0;
     int bonus = 0;
     int seed = 1000;
-    int numPlayers = 2;
     
-    struct gameState G, testG;
+    struct gameState testG;
     int cardSupplies[10] = {  adventurer, embargo, village, minion, mine,
                             cutpurse, sea_hag, tribute, smithy, council_room };
 
     // initialize a game state and player cards
-    initializeGame(numPlayers, cardSupplies, seed, &G);
+    // initializeGame(numPlayers, cardSupplies, seed, &G);
 
     printf("\n////////// Testing Card %s //////////\n", TESTCARD);
 
@@ -161,6 +162,111 @@ int main() {
     else
     {
         printf("Test 6: FAILED: NOT +2 coins... problem\n");
+    }
+
+
+
+    
+    ////////// TEST 7: If choice1, loop through all players, if not currentPlayer, and if the other player's handCount > 4, while it's > 0, discard cards.
+    printf("\n////////// TEST 7: If choice1, loop through all players, if not currentPlayer, and if the other player's handCount > 4, while it's > 0, discard 4 cards.\n");
+
+    // copy game state to a test case
+    memcpy(&testG, &G, sizeof(struct gameState));
+    currentPlayer = testG.whoseTurn;
+    choice2 = 1;
+
+    cardEffect(minion, choice1, choice2, choice3, &testG, handPos, bonus);
+
+    if (choice1)
+    {
+        for (int i = 0; i < testG.numPlayers; i++)
+        {
+            if (i != currentPlayer)
+            {
+                if (testG.handCount[i] > 4)
+                {
+                    if (testG.discardCount[i] == (G.discardCount[i] + 1))
+                    {
+                        printf("Test 7: PASSED: Player %d Properly discarded their hand\n", i);
+                    }
+                    else 
+                    {
+                        printf("Test 7: FAILED: Player %d did NOT discard their hand when they were supposed to\n");
+                    }
+                }
+            }
+        }
+    }
+
+    
+    ////////// TEST 8: If choice1, loop through all players, if not currentPlayer, and if the other player's handCount > 4, DRAW 4 cards.
+    printf("\n////////// TEST 8: If choice1, loop through all players, if not currentPlayer, and if the other player's handCount > 4, DRAW 4 cards.\n");
+
+    // copy game state to a test case
+    memcpy(&testG, &G, sizeof(struct gameState));
+    currentPlayer = testG.whoseTurn;
+    choice2 = 1;
+
+    cardEffect(minion, choice1, choice2, choice3, &testG, handPos, bonus);
+   
+    if (choice1)
+    {
+        for (int i = 0; i < testG.numPlayers; i++)
+        {
+            if (i != currentPlayer)
+            {
+                if (testG.handCount[i] > 4)
+                {
+                    if (testG.deckCount[i] == (G.deckCount[i] + 1))
+                    {
+                        printf("Test 8: PASSED: Player %d Properly DREW cards\n", i);
+                    }
+                    else 
+                    {
+                        printf("Test 8: FAILED: Player %d did NOT DRAW cards when they were supposed to\n");
+                    }
+                }
+            }
+        }
+    }
+
+}
+
+int main() {
+
+    srand(time(NULL));
+
+    // Card Supplies available
+    int cardSupplies[10] = {  baron, embargo, village, minion, mine, 
+                            cutpurse, sea_hag, tribute, smithy, council_room };
+    int seed = 1000;
+
+    // loop however many number of times to test
+    for (int i = 0; i < N; i++)
+    {
+        // create a new game state
+        struct gameState G;
+        int currentPlayer = G.whoseTurn;
+
+        // randomize the values
+        // randomize number of players
+        int numPlayers = G.numPlayers;
+        G.numPlayers = rand() % MAX_PLAYERS;
+    
+        // initialize game
+        initializeGame(numPlayers, cardSupplies, seed, &G);
+
+        // randomize number of cards in hand count for each player affected by card
+        G.handCount[currentPlayer] = rand() % MAX_DECK;
+
+        // randomize number of cards in the deck
+        G.deckCount[currentPlayer] = rand() % MAX_DECK;
+
+        // randomize number of cards in discard count
+        G.discardCount[currentPlayer] = rand();
+
+        // run unit tests for the card
+        testCard(numPlayers, G);
     }
 
     printf("\n////////// SUCCESS: Testing Complete for %s //////////\n\n", TESTCARD);
