@@ -1077,10 +1077,92 @@ int cardEffect(int card, int choice1, int choice2, int choice3, struct gameState
                 drawCard(currentPlayer, state);
                 drawCard(currentPlayer, state);
             }
+            else if (tributeRevealedCards[i] == -1)
+            {
+                if (DEBUG) 
+                {
+                    printf("Both revealed cards are the same.\n");
+                    break;
+                }
+            }
             else { //Action Card
                 state->numActions = state->numActions + 2;
             }
         }
+
+
+        /*
+        
+        for (i = 0; i <= 2; i ++) {
+            if (tributeRevealedCards[0] == copper || tributeRevealedCards[0] == silver || tributeRevealedCards[0] == gold) { //Treasure cards
+                state->coins += 2;
+
+                if (tributeRevealedCards[1] == copper || tributeRevealedCards[1] == silver || tributeRevealedCards[1] == gold) { //Treasure cards
+                    break;
+                }
+            }
+
+            else if (tributeRevealedCards[0] == estate || tributeRevealedCards[0] == duchy || tributeRevealedCards[0] == province || tributeRevealedCards[0] == gardens || tributeRevealedCards[0] == great_hall) { //Victory Card Found
+                drawCard(currentPlayer, state);
+                drawCard(currentPlayer, state);
+
+                if (tributeRevealedCards[1] == estate || tributeRevealedCards[1] == duchy || tributeRevealedCards[1] == province || tributeRevealedCards[1] == gardens || tributeRevealedCards[1] == great_hall) { //Victory Card 
+                    break;
+                }
+            }
+
+            else if (tributeRevealedCards[0] == adventurer 
+                || tributeRevealedCards[0] == council_room 
+                || tributeRevealedCards[0] == feast 
+                || tributeRevealedCards[0] == mine 
+                || tributeRevealedCards[0] == smithy 
+                || tributeRevealedCards[0] == village 
+                || tributeRevealedCards[0] == baron 
+                || tributeRevealedCards[0] == great_hall 
+                || tributeRevealedCards[0] == minion 
+                || tributeRevealedCards[0] == steward 
+                || tributeRevealedCards[0] == tribute 
+                || tributeRevealedCards[0] == ambassador 
+                || tributeRevealedCards[0] == cutpurse 
+                || tributeRevealedCards[0] == outpost 
+                || tributeRevealedCards[0] == embargo 
+                || tributeRevealedCards[0] == salvager 
+                || tributeRevealedCards[0] == sea_hag 
+                || tributeRevealedCards[0] == treasure_map) { //Action Card
+                    state->numActions = state->numActions + 2;
+
+                    if (tributeRevealedCards[1] == adventurer 
+                    || tributeRevealedCards[1] == council_room 
+                    || tributeRevealedCards[1] == feast 
+                    || tributeRevealedCards[1] == mine 
+                    || tributeRevealedCards[1] == smithy 
+                    || tributeRevealedCards[1] == village 
+                    || tributeRevealedCards[1] == baron 
+                    || tributeRevealedCards[1] == great_hall 
+                    || tributeRevealedCards[1] == minion 
+                    || tributeRevealedCards[1] == steward 
+                    || tributeRevealedCards[1] == tribute 
+                    || tributeRevealedCards[1] == ambassador 
+                    || tributeRevealedCards[1] == cutpurse 
+                    || tributeRevealedCards[1] == outpost 
+                    || tributeRevealedCards[1] == embargo 
+                    || tributeRevealedCards[1] == salvager 
+                    || tributeRevealedCards[1] == sea_hag 
+                    || tributeRevealedCards[1] == treasure_map) 
+                    { //Action Card
+                        break;
+                    }
+            }
+            else if (tributeRevealedCards[i] == -1)
+            {
+                printf("OC: Should not print.\n");
+            }
+            else // not Action, Treasure, or Victory
+            {
+                printf("OC: Not an Action, Treasure, or Victory card.\n");
+            }
+        }
+        */
 
         return 0;
 
@@ -1100,6 +1182,7 @@ int cardEffect(int card, int choice1, int choice2, int choice3, struct gameState
         for (i = 0; i < state->handCount[currentPlayer]; i++)
         {
             if (i != handPos && i == state->hand[currentPlayer][choice1] && i != choice1)
+            // if (i != handPos && state->hand[currentPlayer][i] && i != choice1)
             {
                 j++;
             }

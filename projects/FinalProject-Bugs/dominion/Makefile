@@ -2,21 +2,22 @@ CFLAGS= -Wall -fpic -coverage -lm -std=c99
 
 default: unittestresults
 
-unittestresults: unittest_lizz.c unittest_helen.c unittest_rob.c dominion.c rngs.c
-	echo "unittest_lizz.c results: " >> unittestresults.out
-	gcc -o unittest_lizz -g unittest_lizz.c dominion.c rngs.c $(CFLAGS)
-	./unittest_lizz >> unittestresults.out
+unittestresults: unittest_10.c dominion.c rngs.c
+	# echo "unittest_9.c results: " >> unittestresults.out
+	# gcc -o unittest_9 -g unittest_9.c dominion.c rngs.c $(CFLAGS)
+	# ./unittest_9 >> unittestresults.out
+	# gcov dominion.c -f -b -c >> unittestresults.out
+
+
+	echo "unittest_10.c results: " >> unittestresults.out
+	gcc -o unittest_10 -g unittest_10.c dominion.c rngs.c $(CFLAGS)
+	./unittest_10 >> unittestresults.out
 	gcov dominion.c -f -b -c >> unittestresults.out
 
-	echo "unittest_helen.c results: " >> unittestresults.out
-	gcc -o unittest_helen -g unittest_helen.c dominion.c rngs.c $(CFLAGS)
-	./unittest_helen >> unittestresults.out
-	gcov dominion.c -f -b -c >> unittestresults.out
-
-	echo "unittest_rob.c results: " >> unittestresults.out
-	gcc -o unittest_rob -g unittest_rob.c dominion.c rngs.c $(CFLAGS)
-	./unittest_rob >> unittestresults.out
-	gcov dominion.c -f -b -c >> unittestresults.out
+	# echo "unittest_11.c results: " >> unittestresults.out
+	# gcc -o unittest_11 -g unittest_11.c dominion.c rngs.c $(CFLAGS)
+	# ./unittest_11 >> unittestresults.out
+	# gcov dominion.c -f -b -c >> unittestresults.out
 	
 rngs.o: rngs.h rngs.c
 	gcc -c rngs.c -g  $(CFLAGS)
