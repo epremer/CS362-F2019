@@ -62,7 +62,7 @@ int main() {
     choice2 = 0;
     choice3 = 1;
 
-    cardEffect(minion, choice1, choice2, choice3, &testG, handPos, bonus);
+    cardEffect(minion, choice1, choice2, choice3, &testG, handPos, &bonus);
     if ((!choice1 && !choice2) || choice3)
     {
         // PERFORM AS THOUGH CHOICE2 WAS CHOSEN
