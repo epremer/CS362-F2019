@@ -12,7 +12,7 @@ int main() {
     int maxBonus = 10;
     int p = 0;
     int r, handCount;
-    int k[10] = {adventurer, council_room, feast, feast, mine
+    int k[10] = {adventurer, council_room, feast, sea_hag, mine
                , remodel, minion, village, baron, great_hall};
     struct gameState G;
 

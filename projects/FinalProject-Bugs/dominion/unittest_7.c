@@ -15,7 +15,7 @@ int main() {
     int nextPlayer = 1;
     int r; 
     int handCount = 5;
-    int k[10] = {adventurer, council_room, feast, feast, mine
+    int k[10] = {adventurer, council_room, feast, minion, mine
                , remodel, gold, village, baron, great_hall};
     int testCards[3] = {great_hall, council_room, gold};
     struct gameState G;
