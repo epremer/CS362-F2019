@@ -69,7 +69,7 @@ int main() {
     printf("\tNum actions: %d\n", testG.numActions);
 
     // call the Tribute card to invoke its effects
-    cardEffect(tribute, choice1, choice2, choice3, &testG, handPos, bonus);
+    cardEffect(tribute, choice1, choice2, choice3, &testG, handPos, &bonus);
 
     printf("\nAFTER CARD EFFECTS\n");
     // check the revealed cards' types
@@ -173,7 +173,7 @@ int main() {
     printf("BEFORE CARD EFFECT: \n\tCoins: %d\n", testG.coins);
 
     // call the Tribute card to invoke its effects
-    cardEffect(tribute, choice1, choice2, choice3, &testG, handPos, bonus);
+    cardEffect(tribute, choice1, choice2, choice3, &testG, handPos, &bonus);
 
     printf("\nAFTER CARD EFFECTS\n");
     // check the revealed cards' types
