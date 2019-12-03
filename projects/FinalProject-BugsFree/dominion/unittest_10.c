@@ -61,7 +61,7 @@ int main() {
     // }
 
     // call the card in question
-    cardEffect(ambassador, choice1, choice2, choice3, &testG, handPos, bonus);
+    cardEffect(ambassador, choice1, choice2, choice3, &testG, handPos, &bonus);
 
     for (i = 0; i < testG.handCount[currentPlayer]; i++)
     {
