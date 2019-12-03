@@ -22,7 +22,7 @@ int main()
     //set variables to initialize the game play
     int seed = 1000;
     int numPlayers = 2;
-    int choice2Options[2] = {gold, silver};
+    int choice2Options[2] = {copper, silver};
     int r;
 
     for (int i = 0; i < 2; i++)
