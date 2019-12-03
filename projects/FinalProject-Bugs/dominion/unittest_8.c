@@ -42,7 +42,7 @@ int main() {
         G.deck[p][addCards] = estate;
     }
     G.coins = 0;
-    int currentCoins = G.coins;
+    currentCoins = G.coins;
     G.hand[p][0] = baron;
 
     cardEffect(baron, 1, 0, 0, &G,0, &maxBonus);
