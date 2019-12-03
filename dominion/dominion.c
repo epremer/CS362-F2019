@@ -1330,6 +1330,8 @@ int gainCard(int supplyPos, struct gameState *state, int toFlag, int player)
     {
         state->discard[player][ state->discardCount[player] ] = supplyPos;
         state->discardCount[player]++;
+	state->hand[player][state->handCount[player]] = supplyPos;
+        state->handCount[player]++;
     }
 
     //decrease number in supply pile
