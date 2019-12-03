@@ -98,7 +98,7 @@ int main()
     choice2 = gold;
 
     memcpy(&testG, &g, sizeof(struct gameState));
-    int r = cardEffect(mine, choice1, choice2, choice3, &g, handPos, 0);
+    r = cardEffect(mine, choice1, choice2, choice3, &g, handPos, 0);
     if (r == -1)
     {
 
@@ -118,7 +118,7 @@ int main()
         printf("Test failed: expected: %d vs actual %d; handCount changed\n", testG.handCount[currentPlayer], g.handCount[currentPlayer]);
     }
 
-    int hasCard = 0;
+    hasCard = 0;
     for(i = 0; i < g.handCount[currentPlayer]; i++)
     {
         if(g.hand[currentPlayer][i] == choice2)
