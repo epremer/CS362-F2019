@@ -1077,14 +1077,14 @@ int cardEffect(int card, int choice1, int choice2, int choice3, struct gameState
                 drawCard(currentPlayer, state);
                 drawCard(currentPlayer, state);
             }
-            else if (tributeRevealedCards[i] == -1)
-            {
-                if (DEBUG) 
-                {
-                    printf("Both revealed cards are the same.\n");
-                    break;
-                }
-            }
+            // else if (tributeRevealedCards[i] == -1)
+            // {
+            //     if (DEBUG) 
+            //     {
+            //         printf("Both revealed cards are the same.\n");
+            //         break;
+            //     }
+            // }
             else { //Action Card
                 state->numActions = state->numActions + 2;
             }
