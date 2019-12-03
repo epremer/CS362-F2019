@@ -36,17 +36,17 @@ unittest11: unittest_11.c dominion.o rngs.o
 unittests: unittest1 unittest2 unittest3 unittest4 unittest5 unittest6 unittest7 unittest8 unittest9 unittest10 unittest11
 
 unittestresults: unittests
-	./unittest1 &> unittestresult.out
-	./unittest2 &> unittestresult.out
-	./unittest3 &> unittestresult.out
-	./unittest4 &> unittestresult.out
-	./unittest5 &> unittestresult.out
-	./unittest6 &> unittestresult.out
-	./unittest7 &> unittestresult.out
-	./unittest8 &> unittestresult.out
-	./unittest9 &> unittestresult.out
-	./unittest10 &> unittestresult.out
-	./unittest11 &> unittestresult.out
+	./unittest1 >> unittestresult.out
+	./unittest2 >> unittestresult.out
+	./unittest3 >> unittestresult.out
+	./unittest4 >> unittestresult.out
+	./unittest5 >> unittestresult.out
+	./unittest6 >> unittestresult.out
+	./unittest7 >> unittestresult.out
+	./unittest8 >> unittestresult.out
+	./unittest9 >> unittestresult.out
+	./unittest10 >> unittestresult.out
+	./unittest11 >> unittestresult.out
 	gcov dominion.c -b -f >> unittestresult.out
 	
 rngs.o: rngs.h rngs.c
